@@ -39,19 +39,30 @@ let y_gradient ~x ~y image =
 ;;
 
 let transform image =
-  let new_image = Grayscale.transform image in
+  let new_image = Grayscale.transform (Blur.transform image ~radius:2) in
   Image.mapi new_image ~f:(fun ~x ~y _pixel ->
     let convolution_square =
       (x_gradient ~x ~y new_image * x_gradient ~x ~y new_image)
       + (y_gradient ~x ~y new_image * y_gradient ~x ~y new_image)
     in
     let float_convolution_square = Int.to_float convolution_square in
-    let raw_pixel =
-      Float.to_int (Float.round (Float.sqrt float_convolution_square))
-    in
-    let new_pixel = min (max 0 raw_pixel) (Image.max_val new_image) in
-    new_pixel, new_pixel, new_pixel)
+    (* let raw_pixel =
+       Float.to_int (Float.round (Float.sqrt float_convolution_square))
+       in *)
+    if
+      Float.compare
+        (Float.sqrt float_convolution_square)
+        (0.4 *. Int.to_float (Image.max_val new_image))
+      > 0
+    then
+      ( Image.max_val new_image
+      , Image.max_val new_image
+      , Image.max_val new_image )
+    else 0, 0, 0)
 ;;
+
+(* let new_pixel = min (max 0 raw_pixel) (Image.max_val new_image) in
+   new_pixel, new_pixel, new_pixel) *)
 
 let _command =
   Command.basic
