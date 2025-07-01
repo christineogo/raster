@@ -194,13 +194,11 @@ let foldi t ~init ~f =
 ;;
 
 let compare_files ~(input_file : string) ~test_func ~(reference : string) =
-  foldi
-    (test_func (load_ppm ~filename:input_file))
-    ~init:0
-    ~f:(fun ~x ~y acc pixel ->
-      if Pixel.equal pixel (get (load_ppm ~filename:reference) ~x ~y)
-      then acc
-      else acc + 1)
+  ignore reference;
+  let image = test_func (load_ppm ~filename:input_file) in
+  let comparison_image = load_ppm ~filename:reference in
+  foldi image ~init:0 ~f:(fun ~x ~y acc pixel ->
+    if Pixel.equal pixel (get comparison_image ~x ~y) then acc else acc + 1)
 ;;
 
 let make ?(max_val = 255) ~width ~height pixel =
@@ -216,6 +214,14 @@ let make ?(max_val = 255) ~width ~height pixel =
   ; height
   ; max_val
   }
+;;
+
+let in_bounds ?(for_slice = false) t ~x ~y =
+  if x < 0 || x > t.width || ((not for_slice) && x = t.width)
+  then false
+  else if y < 0 || y > t.height || ((not for_slice) && y = t.height)
+  then false
+  else true
 ;;
 
 let to_graphics_image t =

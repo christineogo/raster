@@ -47,7 +47,7 @@ let command =
             (String.chop_suffix_exn filename ~suffix:".ppm" ^ "_blur.ppm")]
 ;;
 
-let%expect_test "grayscale" =
+let%expect_test "blur" =
   let same_image =
     Image.for_all2
       (transform
@@ -56,7 +56,7 @@ let%expect_test "grayscale" =
          ~radius:3)
       (Image.load_ppm
          ~filename:
-           "/home/ubuntu/raster/images/reference-beach_portrait_gray.ppm")
+           "/home/ubuntu/raster/images/reference-beach_portrait_blur.ppm")
       ~f:(fun a b -> Pixel.equal a b)
   in
   print_s [%message (same_image : bool)];

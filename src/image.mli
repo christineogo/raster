@@ -92,6 +92,8 @@ val slice : t -> x_start:int -> x_end:int -> y_start:int -> y_end:int -> t
     functions raises an exception. *)
 val mean_pixel : t -> Pixel.t
 
+val in_bounds : ?for_slice:bool -> t -> x:int -> y:int -> bool
+
 (** [make ?max_val ~width ~height pixel] returns a new image of the given [width] and
     [height] filled with the given [pixel] value. Optionally, [max_val] can be provided to
     set the maximum pixel value (default is 255). If [width] or [height] is non-positive,
