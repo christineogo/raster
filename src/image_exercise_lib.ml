@@ -8,5 +8,6 @@ let command =
     ; "blur", Blur.command
     ; "dither", Dither.command
     ; "edge-detect", Edge_detect.command
+    ; "solarize", Solarize.command
     ]
 ;;
